@@ -1,0 +1,8 @@
+bs4
+altair
+altair_saver
+altair_viewer
+geopy
+pandas
+requests
+selenium
