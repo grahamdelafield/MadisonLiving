@@ -128,7 +128,7 @@ def get_geoloc(loc_element, agent='googlev3', check_against=(), dist_tolerance=2
     return addresses, lats, longs
 
 def construct_frame(street_adds, lows, highs, amens, lats, longs):
-
+    #make sure all the data arrived in same dimensions
     if not len(street_adds)==len(lows)==len(highs)==len(amens)==len(lats)==len(longs):
         print(f'len of street_adds = {len(street_adds)}')
         print(f'len of lows = {len(lows)}')
@@ -158,10 +158,15 @@ def construct_frame(street_adds, lows, highs, amens, lats, longs):
     return pd.DataFrame(inf_dict)
 
 def amens_to_dict(street_adds, amenities):
+    '''
+    Constructs a dictionary item based on listed amenities for propery.
+
+    :param street_adds: (list) street_addresses of collected properties
+    :param amenities: (list) amenities listed for each property
+    '''
     df = pd.DataFrame()
     a_dict = {}
     for z in zip(addresses, amenities):
-        # print(z)
         addr = z[0]
         amns = z[1]
         if amns is None:
@@ -176,6 +181,13 @@ def amens_to_dict(street_adds, amenities):
     return df
 
 def fill_missing(data_list, expected):
+    '''
+    Function to fill missing values with 'None', assuming some properties
+    have amenities listed and others do not.
+
+    :param data_list: (list) array-like item of property information
+    :param expected: (int) expected length of data array
+    '''
     remaining = expected - len(data_list)
     data_list.extend([None]*remaining)
     return data_list
@@ -260,7 +272,7 @@ for i in range(last_page):
     if df.empty:
         df = sub
     else:
-        df = pd.concat([df, sub], ignore_index=True)
+        df = pd.concat([sub, df], ignore_index=True)
 
     nxt_button = driver.find_element_by_class_name('next ')
     if i == last_page - 1:      # no more pages can be found
